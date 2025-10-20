@@ -119,37 +119,4 @@ onReady(function(){
       return;
     }
   });
-
-/* ---------- External links: open in new tab (safe) ---------- */
-(function(){
-  var EXCLUDE = '.js-open-pdf, .gb-open-cal, [data-close], [data-modal], [aria-haspopup="dialog"]';
-  function isExternal(href){
-    if(!href) return false;
-    if(href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
-    try{ var u = new URL(href, location.href); return u.origin !== location.origin; } catch(_){ return false; }
-  }
-  function upgrade(a){
-    if(!a || a.matches(EXCLUDE)) return;
-    var href = a.getAttribute('href');
-    if(isExternal(href)){
-      a.setAttribute('target','_blank');
-      var rel = (a.getAttribute('rel')||'').split(/\s+/);
-      if(rel.indexOf('noopener')===-1) rel.push('noopener');
-      a.setAttribute('rel', rel.join(' ').trim());
-    }
-  }
-  function upgradeAll(ctx){ (ctx||document).querySelectorAll('a[href]').forEach(upgrade); }
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', function(){ upgradeAll(); }); } else { upgradeAll(); }
-  document.addEventListener('click', function(e){
-    var a = e.target.closest && e.target.closest('a[href]');
-    if(!a || a.matches(EXCLUDE)) return;
-    var href = a.getAttribute('href');
-    if(isExternal(href)){
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      window.open(new URL(href, location.href), '_blank', 'noopener');
-    }
-  }, true);
-  new MutationObserver(function(){ upgradeAll(); }).observe(document.documentElement, {childList:true, subtree:true});
-})();
 });
